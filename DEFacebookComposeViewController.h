@@ -36,9 +36,9 @@
 //  to the default center. This signals the VC to update the view accordingly.
 // (-If the user just logged in, they are presented with a Post button which allows them to post.)
 //
-// NOTE: It is recommended to immediately dismiss this view, if displayed modally, once all Facebook operations
-// successfully finish.
 ////
+
+extern NSString *const DEFacebookComposeViewControllerDelegateDidFinishFBOperation;
 
 @class DEFacebookComposeViewController;
 @protocol DEFacebookComposeViewControllerDelegate <NSObject>
@@ -46,11 +46,9 @@
 - (BOOL)isFacebookSessionOpen;
 - (void)facebookComposeControllerDidStartLogin:(DEFacebookComposeViewController *)controller;
 - (void)facebookComposeController:(DEFacebookComposeViewController *)controller didPostText:(NSString *)text;
+- (void)facebookComposeControllerDidCancel:(DEFacebookComposeViewController *)controller;
 
 @end
-
-extern NSString *const DEFacebookComposeViewControllerDelegateDidFinishFBOperation; // clears activity indicator, etc
-
 
 @interface DEFacebookComposeViewController : UIViewController
 

@@ -65,7 +65,7 @@ UIPopoverControllerDelegate>
 @property (nonatomic, strong) NSArray *attachmentFrameViews;
 @property (nonatomic, strong) NSArray *attachmentImageViews;
 @property (nonatomic) UIStatusBarStyle previousStatusBarStyle;
-@property (nonatomic, weak) UIViewController *fromViewController;
+@property (nonatomic, unsafe_unretained) UIViewController *fromViewController;
 @property (nonatomic, strong) UIImageView *backgroundImageView;
 @property (nonatomic, strong) DEFacebookGradientView *gradientView;
 @property (nonatomic, strong) UIPickerView *accountPickerView;
@@ -593,12 +593,21 @@ enum {
 
 - (IBAction)send
 {
-    if([self.delegate respondsToSelector:@selector(isFacebookSessionOpen)] &&
-       [self.delegate isFacebookSessionOpen])
+    if([self.delegate respondsToSelector:@selector(isFacebookSessionOpen)])
     {
-        if([self.delegate respondsToSelector:@selector(facebookComposeControllerDidStartLogin:)])
+        if([self.delegate isFacebookSessionOpen])
         {
-            [self.delegate facebookComposeControllerDidStartLogin:self];
+            if([self.delegate respondsToSelector:@selector(facebookComposeController:didPostText:)])
+            {
+                [self.delegate facebookComposeController:self didPostText:self.textView.text];
+            }
+        }
+        else
+        {
+            if([self.delegate respondsToSelector:@selector(facebookComposeControllerDidStartLogin:)])
+            {
+                [self.delegate facebookComposeControllerDidStartLogin:self];
+            }
         }
     }
     
@@ -616,7 +625,10 @@ enum {
 
 - (IBAction)cancel
 {
-    [self dismissModalViewControllerAnimated:YES];
+    if([self.delegate respondsToSelector:@selector(facebookComposeControllerDidCancel:)])
+    {
+        [self.delegate facebookComposeControllerDidCancel:self];
+    }
 }
 
 
